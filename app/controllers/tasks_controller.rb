@@ -7,14 +7,13 @@ class TasksController < ApplicationController
 
   def create
     @task_list = TaskList.find(params[:task_list_id])
-    task_params = params.require(:task).permit(:description, :due_date)
+    task_params = params.require(:task).permit(:description, :due_date, :completed)
     @task = @task_list.tasks.new(task_params)
 
-    if params[:task][:completed]
-      @task.completed = true
-    end
-
     if @task.save
+      if params[:task][:completed] == 1
+        @task.completed = true
+      end
       redirect_to root_path, notice: "Task was created successfully!"
     else
       render :new
